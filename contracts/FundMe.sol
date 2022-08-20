@@ -14,6 +14,20 @@ contract FundMe{
     function fund() public payable{
         require(msg.value.getConversionRate() >= minimumUsd, "Didn't send enough!");
         funders.push(msg.sender);
-        addressToAmountFunded[msg.sender] = msg.value;
+        addressToAmountFunded[msg.sender] += msg.value;
+    }
+
+    function withdraw() public{
+        for(uint256 funderIndex=0; funderIndex < funders.lenght; funderIndex++){
+            address funder = funders[funderIndex];
+            addressToAmountFunded[funder] = 0;
+        }
+
+        //reset array
+        funders = new address[](0);
+        //actually withdraw the funds
+        (bool callSuccess, ) = payable(msg.sender).call{value: address(this).balance}("")
+        require(callSuccess, "Call failed")
+
     }
 }
