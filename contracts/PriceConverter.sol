@@ -11,7 +11,7 @@ library PriceConverter{
         AggregatorV3Interface priceFeed = AggregatorV3Interface(0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e);
         (, int256 price,,,) = priceFeed.latestRoundData();
         //ETH in terms of USD
-        return uint256(price * 1e10);
+        return uint256(price * 10000000000);
     }
 
     function getVersion() internal view returns(uint256){
@@ -21,7 +21,7 @@ library PriceConverter{
 
     function getConversionRate(uint256 ethAmount) internal view returns(uint256){
         uint256 ethPrice = getVersion();
-        uint256 ethAmountInUsd = (ethAmount * ethPrice)/1e18; 
+        uint256 ethAmountInUsd = (ethAmount * ethPrice)/1000000000000000000; 
         return ethAmountInUsd;
     }
 
