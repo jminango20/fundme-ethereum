@@ -8,7 +8,7 @@ error NotOwner();
 contract FundMe{
     using PriceConverter for uint256;
 
-    uint256 public constant MINIMUM_USD = 50 * 1e18; 
+    uint256 public constant MINIMUM_USD = 50 * 10 ** 18; 
 
     address[] public funders;
     mapping(address => uint256) public addressToAmountFunded;
@@ -43,4 +43,27 @@ contract FundMe{
         if(msg.sender != i_owner){ revert NotOwner();}
         _;
     }
+
+    //What happens if someone sends this contract ETH without calling the fund function.
+    //We will use the following ones:
+
+    receive() external payable{
+        fund();
+    }
+
+    fallback() external payable{
+        fund();
+    }
+
+    //Ether is sent to contract
+    //          is msg.data empty?
+    //              /    \
+    //             yes    no
+    //             /        \
+    //        receive()?    fallback()
+    //          /   \           \
+    //        yes   no
+    //        /      \
+    //    receive()   fallback()    
+
 }
